@@ -492,7 +492,7 @@ function partition() {
     fi
 
     if [ -n "$PARTITION_ROOT_ENCRYPTION_PASSWORD" ]; then
-        echo -n "$PARTITION_ROOT_ENCRYPTION_PASSWORD" | cryptsetup --key-size=512 --key-file=- --align-payload=8192 -s 256 -c aes-xts-plain64 luksFormat --type luks2 /dev/disk/by-partlabel/"$PARTITION_ROOT_LABEL"
+        echo -n "$PARTITION_ROOT_ENCRYPTION_PASSWORD" | cryptsetup --key-size=256 --key-file=- --align-payload=8192 -c aes-xts-plain64 luksFormat --type luks2 /dev/disk/by-partlabel/"$PARTITION_ROOT_LABEL"
         echo -n "$PARTITION_ROOT_ENCRYPTION_PASSWORD" | cryptsetup --key-file=- open /dev/disk/by-partlabel/"$PARTITION_ROOT_LABEL" $CRYPT_ROOT
         sleep 5
     fi
