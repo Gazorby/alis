@@ -559,17 +559,15 @@ function configuration() {
         arch-chroot /mnt systemctl enable fstrim.timer
     fi
 
-    arch-chroot /mnt ln -s -f $TIMEZONE /etc/localtime
+    # arch-chroot /mnt ln -s -f $TIMEZONE /etc/localtime
+    timedatectl set-timezone $TIMEZONE
     arch-chroot /mnt hwclock --systohc
     for LOCALE in "${LOCALES[@]}"; do
         sed -i "s/#$LOCALE/$LOCALE/" /mnt/etc/locale.gen
     done
     arch-chroot /mnt locale-gen
-    for VARIABLE in "${LOCALE_CONF[@]}"; do
-        echo -e "$VARIABLE" >> /mnt/etc/locale.conf
-    done
     echo -e "$KEYMAP\n$FONT\n$FONT_MAP" > /mnt/etc/vconsole.conf
-    echo $HOSTNAME > /mnt/etc/hostname
+    arch-chroot /mnt $HOSTNAME
 
     if [ -n "$SWAP_SIZE" ]; then
         echo "vm.swappiness=10" > /mnt/etc/sysctl.d/99-sysctl.conf
