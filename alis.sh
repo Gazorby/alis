@@ -555,7 +555,7 @@ function configuration() {
 
     genfstab -L -p /mnt >> /mnt/etc/fstab
 
-    if [ -n "$SWAP_SIZE" -a "$FILE_SYSTEM_TYPE" != "btrfs" ]; then
+    if [ -n "$SWAP_SIZE" ]; then
         echo "# swap" >> /mnt/etc/fstab
         echo "/swapfile none swap defaults 0 0" >> /mnt/etc/fstab
         echo "" >> /mnt/etc/fstab
