@@ -472,6 +472,13 @@ function partition_swap() {
     # btrfs: https://btrfs.wiki.kernel.org/index.php/FAQ#Does_btrfs_support_swap_files.3F
     # btrfs: https://wiki.archlinux.org/index.php/Btrfs#Disabling_CoW
     # btrfs: https://jlk.fjfi.cvut.cz/arch/manpages/man/btrfs.5#MOUNT_OPTIONS
+
+    if [[ $FILE_SYSTEM_TYPE = btrfs ]]; then
+        truncate -s 0 /mnt/swapfile
+        chattr +C /mnt/swapfile
+        btrfs property set /mnt/swapfile compression none
+    fi
+
     if [ -n "$SWAP_SIZE" -a "$FILE_SYSTEM_TYPE" != "btrfs" ]; then
         fallocate -l $SWAP_SIZE "/mnt/swapfile"
         chmod 600 "/mnt/swapfile"
