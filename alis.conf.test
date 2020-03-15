@@ -8,7 +8,7 @@ KEYS="fr"
 LOG="true"
 
 # Partition
-ERASE="false" # If true, partitions will be automatically created
+ERASE="true" # If true, partitions will be automatically created
 
 # Required if ERASE is true
 DEVICE="/dev/sda !/dev/nvme0n1 !/dev/mmcblk0" # sata nvme mmc (single)
