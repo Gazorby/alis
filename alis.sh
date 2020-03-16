@@ -602,6 +602,8 @@ function mkinitcpio_configuration() {
         esac
         arch-chroot /mnt sed -i "s/^MODULES=()/MODULES=($MODULES)/" /etc/mkinitcpio.conf
     fi
+    HOOKS=$(echo $HOOKS | sed 's/!systemd/systemd/')
+    HOOKS=$(echo $HOOKS | sed 's/!sd-vconsole/sd-vconsole/')
 
     if [ "$LVM" == "true" ]; then
         pacman_install "lvm2"
@@ -610,23 +612,13 @@ function mkinitcpio_configuration() {
         pacman_install "btrfs-progs"
     fi
 
-    if [ "$BOOTLOADER" == "systemd" ]; then
-        HOOKS=$(echo $HOOKS | sed 's/!systemd/systemd/')
-        if [ "$LVM" == "true" ]; then
-            HOOKS=$(echo $HOOKS | sed 's/!sd-lvm2/sd-lvm2/')
-        fi
-        if [ -n "$PARTITION_ROOT_ENCRYPTION_PASSWORD" ]; then
-            HOOKS=$(echo $HOOKS | sed 's/!sd-encrypt/sd-encrypt/')
-        fi
-    else
-        HOOKS=$(echo $HOOKS | sed 's/!udev/udev/')
-        HOOKS=$(echo $HOOKS | sed 's/!usr/usr/')
-        if [ "$LVM" == "true" ]; then
-            HOOKS=$(echo $HOOKS | sed 's/!lvm2/lvm2/')
-        fi
-        if [ -n "$PARTITION_ROOT_ENCRYPTION_PASSWORD" ]; then
-            HOOKS=$(echo $HOOKS | sed 's/!encrypt/encrypt/')
-        fi
+    if [ "$LVM" == "true" ]; then
+        HOOKS=$(echo $HOOKS | sed 's/!sd-lvm2/sd-lvm2/')
+    fi
+
+    fi
+    if [ -n "$PARTITION_ROOT_ENCRYPTION_PASSWORD" ]; then
+        HOOKS=$(echo $HOOKS | sed 's/!sd-encrypt/sd-encrypt/')
     fi
     HOOKS=$(sanitize_variable "$HOOKS")
     arch-chroot /mnt sed -i "s/^HOOKS=(.*)$/HOOKS=($HOOKS)/" /etc/mkinitcpio.conf
@@ -690,13 +682,11 @@ function bootloader() {
     fi
     if [ -n "$PARTITION_ROOT_ENCRYPTION_PASSWORD" ]; then
         if [ "$DEVICE_TRIM" == "true" ]; then
-            BOOTLOADER_ALLOW_DISCARDS=":allow-discards"
+            BOOTLOADER_ALLOW_DISCARDS="rd.luks.options=discard"
         fi
-        if [[ $BOOTLOADER =~ systemd ]]; then
-            CMDLINE_LINUX="rd.luks.name=$UUID_ROOT=$CRYPT_ROOT"
-        else
-            CMDLINE_LINUX="cryptdevice=PARTUUID=$PARTUUID_ROOT:$CRYPT_ROOT$BOOTLOADER_ALLOW_DISCARDS"
-        fi
+
+        CMDLINE_LINUX="rd.luks.name=$UUID_ROOT=$CRYPT_ROOT $BOOTLOADER_ALLOW_DISCARDS"
+
     fi
     if [ "$FILE_SYSTEM_TYPE" == "btrfs" ]; then
         CMDLINE_LINUX="$CMDLINE_LINUX rootflags=subvol=root"
