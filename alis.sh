@@ -616,7 +616,6 @@ function mkinitcpio_configuration() {
         HOOKS=$(echo $HOOKS | sed 's/!sd-lvm2/sd-lvm2/')
     fi
 
-    fi
     if [ -n "$PARTITION_ROOT_ENCRYPTION_PASSWORD" ]; then
         HOOKS=$(echo $HOOKS | sed 's/!sd-encrypt/sd-encrypt/')
     fi
