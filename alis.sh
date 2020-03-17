@@ -453,11 +453,13 @@ function partition_mount() {
 
         mount -o "subvol=root,$PARTITION_OPTIONS,compress=lzo" LABEL="$PARTITION_ROOT_LABEL" /mnt
 
+        # We use zstd:2 according to this benchmark : https://docs.google.com/spreadsheets/d/1x9-3OQF4ev1fOCrYuYWt1QmxYRmPilw_nLik5H_2_qA/edit#gid=0
+        # From this sub : https://www.reddit.com/r/linux/comments/bppk9g/my_benchmarks_of_btrfs_new_zstd_levels_in_linux_51/
         mkdir /mnt/{boot,home,var,snapshots}
         mount -o "$PARTITION_OPTIONS" "$PARTITION_BOOT" /mnt/boot
-        mount -o "subvol=home,$PARTITION_OPTIONS,compress=lzo" LABEL="$PARTITION_ROOT_LABEL" /mnt/home
-        mount -o "subvol=var,$PARTITION_OPTIONS,compress=lzo" LABEL="$PARTITION_ROOT_LABEL" /mnt/var
-        mount -o "subvol=snapshots,$PARTITION_OPTIONS,compress=lzo" LABEL="$PARTITION_ROOT_LABEL" /mnt/snapshots
+        mount -o "subvol=home,$PARTITION_OPTIONS,compress=zstd:2" LABEL="$PARTITION_ROOT_LABEL" /mnt/home
+        mount -o "subvol=var,$PARTITION_OPTIONS,compress=zstd:2" LABEL="$PARTITION_ROOT_LABEL" /mnt/var
+        mount -o "subvol=snapshots,$PARTITION_OPTIONS,compress=zstd:2" LABEL="$PARTITION_ROOT_LABEL" /mnt/snapshots
     else
         mount -o "$PARTITION_OPTIONS" LABEL="$PARTITION_ROOT_LABEL" /mnt
 
