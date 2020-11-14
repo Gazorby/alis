@@ -1,50 +1,66 @@
 # alis
 
-Arch Linux Install Script (alis) installs unattended, automated and customized Arch Linux system.
+Arch Linux Install Script (or alis) installs unattended, automated and customized Arch Linux system.
 
-This a simple bash script for an easy and fast way of installing Arch Linux, follow the [Arch Way](https://wiki.archlinux.org/index.php/Arch_Linux) of doing things and learn what this script does. This will allow you to know what is happening. 
+It is a simple bash script that fully automates the installation of a Arch Linux system after booting from the original Arch Linux installation media. It contains the same commands that you would type and execute one by one interactively to complete the installation. The only user intervention needed is to edit a configuration file to choose the installation options and preferences from partitioning, to encryption, bootloader, file system, language and keyboard mapping, desktop environment, kernels, packages to install and graphic drivers. This automation makes the installation easy and fast.
 
-Please, don't ask for support for this script in Arch Linux forums, first read
-the [Arch Linux wiki](https://wiki.archlinux.org), the [Installation Guide](https://wiki.archlinux.org/index.php/Installation_guide) and the [General
-Recomendations](https://wiki.archlinux.org/index.php/General_recommendations), later
-compare those commands with the commands of this script.
+If some time later after an system update for any reason the system does not boot correctly a recovery script is also provided to enter in a recovery mode that allows to downgrade packages or execute any other commands to restore the system. Also a log of the installation can be taken with <a href="https://asciinema.org/">asciinema</a>.
 
-For new features, improvements and bugs fill an issue in GitHub or make a pull request. You can test it in a VirtualBox virtual machine (recommended) before run it in real hardware. If you test it in real hardware please send me an email to pico.dev@gmail.com with the machine description and tell me if something goes wrong or all works fine. [Pull request](https://github.com/picodotdev/alis/pulls) and [new feature request](https://github.com/picodotdev/alis/issues) are welcome!
-
-**Warning! This script deletes all partitions of the persistent storage**
+**Warning! This script can delete all partitions of the persistent storage. It is recommended to test it first in a virtual machine like <a href="https://www.virtualbox.org/">VirtualBox</a>.**
 
 Currently these scripts are for me but maybe they are useful for you too.
 
+Follow the [Arch Way](https://wiki.archlinux.org/index.php/Arch_Linux) of doing things and learn what this script does. This will allow you to know what is happening. 
+
+Please, don't ask for support for this script in Arch Linux forums, first read the [Arch Linux wiki](https://wiki.archlinux.org), the [Installation Guide](https://wiki.archlinux.org/index.php/Installation_guide) and the [General Recomendations](https://wiki.archlinux.org/index.php/General_recommendations), later compare those commands with the commands of this script.
+
+For new features, improvements and bugs fill an issue in GitHub or make a pull request. You can test it in a [VirtualBox](https://www.virtualbox.org/) virtual machine (strongly recommended) before run it in real hardware. If you test it in real hardware please send me an email to pico.dev@gmail.com with the machine description and tell me if something goes wrong or all works fine. [Pull request](https://github.com/picodotdev/alis/pulls) and [new feature request](https://github.com/picodotdev/alis/issues) are welcome!
+
+### Principles
+
+* Use the original Arch Linux installation media
+* Require as little interactivity as possible
+* Allow to customize the installation to cover the most common cases
+* Provide support for recovery
+* Provide support for log
+
 ### Features
 
-* GPT, UEFI, BIOS
-* Support for SATA, NVMe and MMC
-* LVM and no LVM
-* _root_ partition encrypted and no encrypted
-* LVM on LUKS when LVM and encrypted
-* File system formats ext4, btrfs (with subvols), xfs
-* Optional file swap (not supported in btrfs)
+* System: UEFI, BIOS
+* Storage: SATA, NVMe and MMC
+* Encryption: root partition encrypted and no encrypted
+* Partition: no LVM, LVM, LVM on LUKS, GPT on UEFI, MBR on BIOS
+* File system: ext4, btrfs (with subvols), xfs
+* Kernels: linux-lts, linux-hardened, linux-zen
+* Desktop environment: GNOME, KDE, XFCE, Mate, Cinnamon, LXDE, i3-wm, i3-gaps
+* Display managers: GDM, SDDM, Lightdm, lxdm
+* Graphics controller: intel, nvidia and amd with optionally early KMS start. With intel optionally fastboot, hardware video acceleration and framebuffer compression.
+* Bootloader: GRUB, rEFInd, systemd-boot
+* Custom shell: bash, zsh, dash, fish
 * WPA WIFI network installation
 * Periodic TRIM for SSD storage
-* VirtualBox guest utils
 * Intel and AMD processors microcode
+* Optional swap file
+* VirtualBox guest utils
+* Kernel compression and custom parameters
 * Users creation and add to sudoers
 * Common and custom packages installation
+* systemd units enable or disable
 * AUR utility installation (aurman, yay)
-* Retry packages download on connection/mirror error
-* Desktop environments (GDM, KDE, XFCE, Mate, Cinnamon, LXDE), display managers (GDM, SDDM, Lightdm, lxdm) and no desktop environment
-* Additional kernel installation (linux-lts, linux-hardened, linux-zen)
-* Kernel compression
-* Graphic controllers (intel, nvidia, amd) with optionally early KMS start
-* GRUB, rEFInd, systemd-boot bootloaders
 * Script for download installation and recovery scripts and configuration files
+* Retry packages download on connection/mirror error
 * Packer support for testing in VirtualBox
 * Installation log with all commands executed and output in a file and/or asciinema video
 * Wait after installation for an abortable reboot
+* Fork the repository and use your own configuration
 
 ### Installation
 
-Internet connection is required, with wireless WIFI connection see [Wireless_network_configuration](https://wiki.archlinux.org/index.php/Wireless_network_configuration#Wi-Fi_Protected_Access) to bring up WIFI connection before starting installation with alis.
+Download and boot from the latest <a href="https://www.archlinux.org/download/">original Arch Linux installation media</a>. After boot use the following comands to start the installation.
+
+Follow the <a href="https://wiki.archlinux.org/index.php/Arch_Linux">Arch Way</a> of doing things and learn what this script does. This will allow you to know what is happening. 
+
+Internet connection is required, with wireless WIFI connection see <a href="https://wiki.archlinux.org/index.php/Wireless_network_configuration#Wi-Fi_Protected_Access">Wireless_network_configuration</a> to bring up WIFI connection before start the installation.
 
 ```
 # # Start the system with lastest Arch Linux installation media
@@ -52,10 +68,17 @@ Internet connection is required, with wireless WIFI connection see [Wireless_net
 # curl https://raw.githubusercontent.com/picodotdev/alis/master/download.sh | bash, or with URL shortener curl -sL https://bit.ly/2F3CATp | bash
 # # Edit alis.conf and change variables values with your preferences
 # vim alis.conf
+# # Start
 # ./alis.sh
 ```
 
-### Installation with asciinema vídeo
+If you fork _alis_ repository you can host your own configuration and changes in your repository.
+
+```
+# curl https://raw.githubusercontent.com/picodotdev/alis/master/download.sh | bash -s -- -u [github user]
+```
+
+### Installation with asciinema video
 
 As another form of log.
 
@@ -66,23 +89,16 @@ As another form of log.
 # ./alis-asciinema.sh
 # # Edit alis.conf and change variables values with your preferences
 # vim alis.conf
+# Start
 # ./alis.sh
+# # Exit
 # exit
 # ./alis-reboot.sh
 ```
 
-### Testing in VirtuaBox with Packer
-
-```
-$ wget https://raw.githubusercontent.com/picodotdev/alis/master/alis.conf
-$ wget https://raw.githubusercontent.com/picodotdev/alis/master/alis.sh
-$ wget https://raw.githubusercontent.com/picodotdev/alis/master/alis-packer.json
-$ wget https://raw.githubusercontent.com/picodotdev/alis/master/alis-packer.sh
-$ chmod +x ./alis-packer.sh
-$ ./alis-packer.sh
-```
-
 ### Recovery
+
+Boot from the latest <a href="https://www.archlinux.org/download/">original Arch Linux installation media</a>. After boot use the following comands to start the recovery, this will allow you to enter in the arch-chroot environment.
 
 ```
 # # Start the system with lastest Arch Linux installation media
@@ -92,7 +108,37 @@ $ ./alis-packer.sh
 # vim alis-recovery.conf
 # # Optional asciinema video
 # ./alis-asciinema-recovery.sh
+# # Start
 # ./alis-recovery.sh
+```
+
+### How you can help
+
+* Test in VirtualBox and create an issue if something does not work, attach the main parts of the used configuration file and the error message
+* Create issues with new features
+* Send pull requests
+* Share it in social networks, forums, create a blog post or video about it
+
+### Test in VirtuaBox with Packer
+
+VirtualBox and [Packer](https://packer.io/) are required.
+
+* Firmware: efi, bios
+* File system: ext4, btrfs, f2fs, xfs
+* Partition: luks, lvm
+* Bootloader: grub, refind, systemd
+* Desktop environment: gnome, kde, xfce, ...
+
+
+```
+$ curl https://raw.githubusercontent.com/picodotdev/alis/master/download-packer.sh | bash
+
+$ ./alis-packer.sh -c alis-packer-efi-btrfs-luks-lvm-systemd.json
+$ ./alis-packer.sh -c alis-packer-efi-ext4-grub-gnome.json
+$ ./alis-packer.sh -c alis-packer-efi-ext4-grub-kde.json
+$ ./alis-packer.sh -c alis-packer-efi-ext4-grub-xfce.json
+$ ./alis-packer.sh -c alis-packer-efi-ext4-luks-lvm-grub.json
+$ ./alis-packer.sh -c alis-packer-efi-f2fs-luks-lvm-systemd.json
 ```
 
 ### Video
@@ -131,6 +177,7 @@ https://www.archlinux.org/download/
 * https://wiki.archlinux.org/index.php/Pacman
 * https://wiki.archlinux.org/index.php/Arch_User_Repository
 * https://wiki.archlinux.org/index.php/Mirrors
+* https://wiki.archlinux.org/index.php/Reflector
 * https://wiki.archlinux.org/index.php/VirtualBox
 * https://wiki.archlinux.org/index.php/Mkinitcpio
 * https://wiki.archlinux.org/index.php/Intel_graphics
@@ -147,11 +194,13 @@ https://www.archlinux.org/download/
 * https://wiki.archlinux.org/index.php/Systemd-boot
 * https://wiki.archlinux.org/index.php/Systemd
 * https://wiki.archlinux.org/index.php/Microcode
+* https://wiki.archlinux.org/index.php/Command-line_shell
 * https://wiki.archlinux.org/index.php/Wayland
 * https://wiki.archlinux.org/index.php/Xorg
 * https://wiki.archlinux.org/index.php/Desktop_environment
 * https://wiki.archlinux.org/index.php/GNOME
 * https://wiki.archlinux.org/index.php/KDE
 * https://wiki.archlinux.org/index.php/Xfce
+* https://wiki.archlinux.org/index.php/I3
 * http://tldp.org/LDP/Bash-Beginners-Guide/html/
 * http://tldp.org/LDP/abs/html/
